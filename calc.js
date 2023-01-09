@@ -38,7 +38,6 @@ document.querySelector(".buttons").onclick = (event) => {
   if (digits.includes(key)) {
     if (b === "" && sign === "") {
       a += key;
-      console.log(a, b, sign);
       out.textContent = a;
     } else if (a !== "" && b !== "" && finish) {
       b = key;
@@ -48,7 +47,6 @@ document.querySelector(".buttons").onclick = (event) => {
       b += key;
       out.textContent = b;
     }
-    console.log(a, b, sign);
     return;
   }
 
@@ -57,7 +55,6 @@ document.querySelector(".buttons").onclick = (event) => {
   if (action.includes(key)) {
     sign = key;
     out.textContent = sign;
-    console.log(a, b, sign);
     return;
   }
 
