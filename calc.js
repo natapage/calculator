@@ -11,11 +11,18 @@ const action = ["-", "+", "X", "/"];
 const out = document.querySelector(".calc-screen p");
 
 function clearAll() {
-  a = ""; // первое число
-  b = ""; // второе число
-  sign = ""; // знак операции
+  a = "";
+  b = "";
+  sign = "";
   finish = false;
   keyPersent = false;
+}
+
+function roundOutput(num) {
+  if (num.toString().length > 8) {
+    return num.toExponential(5);
+  }
+  return num;
 }
 
 document.querySelector(".ac").onclick = () => {
@@ -36,16 +43,33 @@ document.querySelector(".buttons").onclick = (event) => {
   // если нажато 0-9 или .
 
   if (digits.includes(key)) {
-    if (b === "" && sign === "") {
-      a += key;
+    if (a.includes(".") && key === "." && b === "") {
       out.textContent = a;
+      return;
+    }
+    if (b.includes(".") && key === ".") {
+      out.textContent = b;
+      return;
+    }
+
+    if (b === "" && sign === "") {
+      if (a.length > 8) {
+        out.textContent = a;
+      } else {
+        a += key;
+        out.textContent = a;
+      }
     } else if (a !== "" && b !== "" && finish) {
       b = key;
       finish = false;
       out.textContent = b;
     } else {
-      b += key;
-      out.textContent = b;
+      if (b.length > 8) {
+        out.textContent = b;
+      } else {
+        b += key;
+        out.textContent = b;
+      }
     }
     return;
   }
@@ -63,7 +87,7 @@ document.querySelector(".buttons").onclick = (event) => {
   if (key === "%") {
     switch (sign) {
       case "X":
-        a = (a / 100) * b;
+        a = roundOutput((a / 100) * b);
         out.textContent = a;
         finish = true;
         break;
@@ -83,13 +107,13 @@ document.querySelector(".buttons").onclick = (event) => {
     if (keyPersent) {
       switch (sign) {
         case "+":
-          a = (a / 100) * b + +a;
+          a = roundOutput((a / 100) * b + +a);
           break;
         case "-":
-          a = a - (a / 100) * b;
+          a = roundOutput(a - (a / 100) * b);
           break;
         case "/":
-          a = a / ((a / 100) * b);
+          a = roundOutput(a / ((a / 100) * b));
           break;
       }
       keyPersent = false;
@@ -99,13 +123,13 @@ document.querySelector(".buttons").onclick = (event) => {
 
     switch (sign) {
       case "+":
-        a = +a + +b;
+        a = roundOutput(+a + +b);
         break;
       case "-":
         a = a - b;
         break;
       case "X":
-        a = a * b;
+        a = roundOutput(a * b);
         break;
       case "/":
         if (b === "0") {
@@ -113,7 +137,7 @@ document.querySelector(".buttons").onclick = (event) => {
           clearAll();
           return;
         }
-        a = a / b;
+        a = roundOutput(a / b);
         break;
     }
     finish = true;
